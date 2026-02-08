@@ -1,0 +1,46 @@
+{
+  "matieres": [
+    {
+      "id": "algebre",
+      "name": "Algèbre linéaire",
+      "credits": 5,
+      "type": "maths",
+      "chapitres": [
+        "Espaces vectoriels",
+        "Matrices",
+        "Déterminants",
+        "Diagonalisation",
+        "Formes quadratiques"
+      ],
+      "difficulte_moyenne": 8
+    },
+    {
+      "id": "proba",
+      "name": "Probabilités",
+      "credits": 3,
+      "type": "stats",
+      "chapitres": [
+        "Variables aléatoires",
+        "Lois usuelles",
+        "Convergences",
+        "Théorème central limite",
+        "Vecteurs aléatoires"
+      ],
+      "difficulte_moyenne": 7
+    },
+    {
+      "id": "python",
+      "name": "Python",
+      "credits": 2.5,
+      "type": "info",
+      "chapitres": [
+        "Structures de données",
+        "Fonctions",
+        "Fichiers CSV/JSON",
+        "Pandas/Numpy",
+        "Visualisation"
+      ],
+      "difficulte_moyenne": 4
+    }
+  ]
+}
