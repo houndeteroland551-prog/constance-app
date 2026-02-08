@@ -3,1080 +3,242 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Constance - Suivi d'apprentissage</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔥</text></svg>">
-    <style>
-        /* RESET SIMPLE */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        
-        :root {
-            --bg-main: #f8fafc;
-            --bg-card: #ffffff;
-            --border: #e2e8f0;
-            --text: #1e293b;
-            --text-light: #64748b;
-            --primary: #3b82f6;
-            --primary-dark: #2563eb;
-            --success: #10b981;
-            --danger: #ef4444;
-            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            --radius: 12px;
-        }
-        
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: var(--bg-main);
-            color: var(--text);
-            line-height: 1.5;
-            min-height: 100vh;
-            padding: 16px;
-        }
-        
-        .container {
-            max-width: 480px;
-            margin: 0 auto;
-        }
-        
-        /* CARD STYLE */
-        .card {
-            background: var(--bg-card);
-            border-radius: var(--radius);
-            padding: 24px;
-            margin-bottom: 20px;
-            box-shadow: var(--shadow);
-            border: 1px solid var(--border);
-            transition: transform 0.2s;
-        }
-        
-        .card:hover {
-            transform: translateY(-2px);
-        }
-        
-        /* HEADER */
-        .header {
-            text-align: center;
-            padding: 24px 0;
-        }
-        
-        h1 {
-            font-size: 32px;
-            font-weight: 800;
-            color: var(--primary);
-            margin-bottom: 8px;
-        }
-        
-        .subtitle {
-            color: var(--text-light);
-            font-size: 14px;
-        }
-        
-        /* STREAK */
-        .streak-container {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 16px;
-            margin: 24px 0;
-        }
-        
-        .streak-badge {
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            color: white;
-            padding: 12px 24px;
-            border-radius: 50px;
-            font-weight: 700;
-            font-size: 18px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            box-shadow: var(--shadow);
-        }
-        
-        /* DURATION SELECTOR */
-        .duration-selector {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
-            margin: 24px 0;
-        }
-        
-        .duration-option {
-            background: var(--bg-card);
-            border: 2px solid var(--border);
-            border-radius: var(--radius);
-            padding: 20px 12px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.2s;
-            font-size: 20px;
-            font-weight: 700;
-        }
-        
-        .duration-option:hover {
-            border-color: var(--primary);
-            transform: scale(1.05);
-        }
-        
-        .duration-option.active {
-            background: var(--primary);
-            color: white;
-            border-color: var(--primary);
-            transform: scale(1.05);
-        }
-        
-        .duration-option span {
-            display: block;
-            font-size: 12px;
-            font-weight: 500;
-            margin-top: 4px;
-            opacity: 0.8;
-        }
-        
-        /* PROGRESS */
-        .progress-container {
-            margin: 24px 0;
-        }
-        
-        .progress-bar {
-            height: 8px;
-            background: var(--border);
-            border-radius: 4px;
-            overflow: hidden;
-            margin-bottom: 8px;
-        }
-        
-        .progress-fill {
-            height: 100%;
-            background: var(--primary);
-            border-radius: 4px;
-            width: 0%;
-            transition: width 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-        
-        .progress-text {
-            display: flex;
-            justify-content: space-between;
-            font-size: 12px;
-            color: var(--text-light);
-        }
-        
-        /* BUTTONS */
-        .btn {
-            width: 100%;
-            padding: 16px;
-            border: none;
-            border-radius: var(--radius);
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-            margin-top: 8px;
-        }
-        
-        .btn-primary {
-            background: var(--primary);
-            color: white;
-        }
-        
-        .btn-primary:hover:not(:disabled) {
-            background: var(--primary-dark);
-            transform: translateY(-2px);
-            box-shadow: var(--shadow);
-        }
-        
-        .btn-primary:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-        
-        .btn-success {
-            background: var(--success);
-            color: white;
-        }
-        
-        .btn-secondary {
-            background: var(--bg-main);
-            color: var(--text);
-            border: 1px solid var(--border);
-        }
-        
-        .btn-secondary:hover {
-            background: var(--border);
-        }
-        
-        /* NAVIGATION */
-        .nav {
-            display: flex;
-            justify-content: center;
-            gap: 32px;
-            padding: 20px 0;
-            border-top: 1px solid var(--border);
-            margin-top: 24px;
-        }
-        
-        .nav-btn {
-            background: none;
-            border: none;
-            color: var(--text-light);
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            padding: 8px 16px;
-            border-radius: 20px;
-            transition: all 0.2s;
-        }
-        
-        .nav-btn:hover {
-            color: var(--primary);
-            background: rgba(59, 130, 246, 0.1);
-        }
-        
-        /* SCREENS */
-        .screen {
-            display: none;
-            animation: fadeIn 0.3s;
-        }
-        
-        .screen.active {
-            display: block;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        /* BACK BUTTON */
-        .back-btn {
-            background: none;
-            border: none;
-            color: var(--primary);
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            padding: 12px 0;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        /* CALENDAR */
-        .calendar {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 4px;
-            margin: 20px 0;
-        }
-        
-        .calendar-day {
-            aspect-ratio: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-            border-radius: 6px;
-            font-weight: 500;
-        }
-        
-        .calendar-day.valid {
-            background: var(--primary);
-            color: white;
-        }
-        
-        .calendar-day.today {
-            background: var(--success);
-            color: white;
-            font-weight: bold;
-        }
-        
-        .calendar-day.empty {
-            background: transparent;
-        }
-        
-        /* TEXTAREA */
-        .note-area {
-            width: 100%;
-            min-height: 120px;
-            padding: 16px;
-            border: 2px solid var(--border);
-            border-radius: var(--radius);
-            font-family: inherit;
-            font-size: 14px;
-            resize: vertical;
-            margin: 16px 0;
-        }
-        
-        .note-area:focus {
-            outline: none;
-            border-color: var(--primary);
-        }
-        
-        /* SETTINGS */
-        .setting {
-            margin-bottom: 24px;
-        }
-        
-        .setting label {
-            display: block;
-            font-weight: 600;
-            margin-bottom: 8px;
-            color: var(--text);
-        }
-        
-        .setting select {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid var(--border);
-            border-radius: var(--radius);
-            font-size: 14px;
-            background: white;
-        }
-        
-        /* STATS */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 16px;
-            margin: 24px 0;
-        }
-        
-        .stat-card {
-            background: var(--bg-main);
-            padding: 16px;
-            border-radius: var(--radius);
-            text-align: center;
-        }
-        
-        .stat-value {
-            font-size: 24px;
-            font-weight: 800;
-            color: var(--primary);
-            margin-bottom: 4px;
-        }
-        
-        .stat-label {
-            font-size: 12px;
-            color: var(--text-light);
-        }
-        
-        /* RESPONSIVE */
-        @media (max-width: 480px) {
-            .container {
-                padding: 0;
-            }
-            
-            .card {
-                padding: 20px;
-            }
-            
-            .duration-selector {
-                grid-template-columns: 1fr;
-            }
-            
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-        
-        /* ANIMATIONS */
-        .pulse {
-            animation: pulse 0.6s;
-        }
-        
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
-        
-        .shake {
-            animation: shake 0.5s;
-        }
-        
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-5px); }
-            75% { transform: translateX(5px); }
-        }
-        
-        /* TOAST */
-        .toast {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: var(--success);
-            color: white;
-            padding: 12px 20px;
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-            z-index: 1000;
-            animation: slideIn 0.3s;
-        }
-        
-        @keyframes slideIn {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
-    </style>
+    <title>ISE Mentor - Assistant de Révision</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-    <!-- MAIN SCREEN -->
-    <div id="mainScreen" class="screen active">
-        <div class="container">
-            <div class="header">
-                <h1>🔥 Constance</h1>
-                <div class="subtitle">La régularité avant tout</div>
+    <div class="container">
+        <!-- En-tête -->
+        <header>
+            <div class="header-content">
+                <h1><i class="fas fa-graduation-cap"></i> ISE Mentor</h1>
+                <p class="subtitle">Ton assistant intelligent de révision - Ingénieur Statisticien Économiste</p>
             </div>
-            
-            <div class="card">
-                <div style="text-align: center;">
-                    <div class="streak-badge" id="streakBadge">
-                        <span>🔥</span>
-                        <span id="streakCount">Jour 0</span>
+        </header>
+
+        <!-- Navigation -->
+        <nav class="steps">
+            <div class="step active" data-step="1">
+                <span class="step-number">1</span>
+                <span class="step-text">Emploi du temps</span>
+            </div>
+            <div class="step" data-step="2">
+                <span class="step-number">2</span>
+                <span class="step-text">Examens</span>
+            </div>
+            <div class="step" data-step="3">
+                <span class="step-number">3</span>
+                <span class="step-text">Difficultés</span>
+            </div>
+            <div class="step" data-step="4">
+                <span class="step-number">4</span>
+                <span class="step-text">Planning</span>
+            </div>
+        </nav>
+
+        <!-- Contenu principal -->
+        <main>
+            <!-- Étape 1: Emploi du temps -->
+            <section id="step-1" class="step-content active">
+                <h2><i class="fas fa-calendar-alt"></i> Ton emploi du temps de la semaine</h2>
+                <p class="instruction">Renseigne tes cours, travaux dirigés et jours de repos.</p>
+                
+                <div class="week-schedule">
+                    <!-- Généré dynamiquement par JavaScript -->
+                </div>
+                
+                <div class="controls">
+                    <button class="btn btn-secondary" onclick="addFreeSlot()">
+                        <i class="fas fa-plus"></i> Ajouter un créneau libre
+                    </button>
+                    <button class="btn btn-primary" onclick="nextStep(2)">
+                        Suivant <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            </section>
+
+            <!-- Étape 2: Examens -->
+            <section id="step-2" class="step-content">
+                <h2><i class="fas fa-exclamation-triangle"></i> Examens et travaux à rendre</h2>
+                <p class="instruction">Ajoute tes examens, compositions et rendus de projet.</p>
+                
+                <div class="exams-list">
+                    <div class="exam-item">
+                        <input type="text" class="exam-matiere" placeholder="Matière (ex: Algèbre)" value="Algèbre">
+                        <input type="date" class="exam-date" value="2024-03-15">
+                        <select class="exam-type">
+                            <option value="examen">Examen</option>
+                            <option value="compo" selected>Composition</option>
+                            <option value="projet">Projet à rendre</option>
+                            <option value="oral">Oral</option>
+                        </select>
+                        <select class="exam-coeff">
+                            <option value="1">Coeff 1</option>
+                            <option value="1.5" selected>Coeff 1.5</option>
+                            <option value="2">Coeff 2</option>
+                            <option value="3">Coeff 3</option>
+                        </select>
+                        <button class="btn-remove" onclick="removeExam(this)"><i class="fas fa-times"></i></button>
                     </div>
                 </div>
                 
-                <div style="text-align: center; margin: 20px 0;">
-                    <div style="font-size: 18px; font-weight: 600; color: var(--text);" id="domainDisplay">
-                        Mon apprentissage
-                    </div>
-                    <div style="font-size: 14px; color: var(--text-light); margin-top: 4px;" id="goalDisplay">
-                        Objectif : 20 min/jour
+                <div class="controls">
+                    <button class="btn btn-secondary" onclick="addExam()">
+                        <i class="fas fa-plus"></i> Ajouter un examen
+                    </button>
+                    <button class="btn btn-secondary" onclick="prevStep(1)">
+                        <i class="fas fa-arrow-left"></i> Retour
+                    </button>
+                    <button class="btn btn-primary" onclick="nextStep(3)">
+                        Suivant <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            </section>
+
+            <!-- Étape 3: Difficultés -->
+            <section id="step-3" class="step-content">
+                <h2><i class="fas fa-brain"></i> Tes difficultés par matière</h2>
+                <p class="instruction">Évalue chaque matière de 1 (très facile) à 10 (très difficile).</p>
+                
+                <div class="difficulties-container">
+                    <!-- Généré dynamiquement par JavaScript -->
+                </div>
+                
+                <div class="priorities">
+                    <h3><i class="fas fa-flag"></i> Priorités personnelles</h3>
+                    <p>Quelles matières doivent être absolument validées ?</p>
+                    <div class="priorities-list">
+                        <!-- Généré dynamiquement -->
                     </div>
                 </div>
                 
-                <div class="progress-container">
-                    <div class="progress-bar">
-                        <div class="progress-fill" id="progressFill"></div>
-                    </div>
-                    <div class="progress-text">
-                        <span>0 min</span>
-                        <span id="progressPercent">0%</span>
-                        <span id="goalText">20 min</span>
+                <div class="constraints">
+                    <h3><i class="fas fa-cogs"></i> Tes contraintes</h3>
+                    <div class="constraint-item">
+                        <label>Heures max de révision par jour :</label>
+                        <input type="range" id="max-hours" min="1" max="8" value="4">
+                        <span id="max-hours-value">4h</span>
                     </div>
                 </div>
                 
-                <div style="margin: 32px 0;">
-                    <div style="text-align: center; font-size: 18px; font-weight: 600; margin-bottom: 20px;">
-                        ⏱️ Durée aujourd'hui ?
+                <div class="controls">
+                    <button class="btn btn-secondary" onclick="prevStep(2)">
+                        <i class="fas fa-arrow-left"></i> Retour
+                    </button>
+                    <button class="btn btn-primary" onclick="generatePlanning()">
+                        Générer mon planning <i class="fas fa-magic"></i>
+                    </button>
+                </div>
+            </section>
+
+            <!-- Étape 4: Planning -->
+            <section id="step-4" class="step-content">
+                <h2><i class="fas fa-calendar-check"></i> Ton planning de révision</h2>
+                
+                <div class="planning-header">
+                    <div class="charge-indicator">
+                        <div class="charge-label">
+                            <span>Charge cognitive :</span>
+                            <span id="charge-level" class="charge-moderate">MODÉRÉE (72%)</span>
+                        </div>
+                        <div class="charge-bar">
+                            <div class="charge-fill" style="width: 72%"></div>
+                        </div>
                     </div>
                     
-                    <div class="duration-selector">
-                        <div class="duration-option" data-minutes="15">
-                            15<span>min</span>
-                        </div>
-                        <div class="duration-option" data-minutes="30">
-                            30<span>min</span>
-                        </div>
-                        <div class="duration-option" data-minutes="45">
-                            45<span>min</span>
-                        </div>
-                        <div class="duration-option" data-minutes="60">
-                            60<span>min</span>
-                        </div>
-                        <div class="duration-option" data-minutes="90">
-                            90<span>min</span>
-                        </div>
-                        <div class="duration-option" data-minutes="120">
-                            120<span>min</span>
+                    <div class="alerts">
+                        <h3><i class="fas fa-bell"></i> Alertes importantes</h3>
+                        <div id="alerts-container">
+                            <!-- Alertes dynamiques -->
                         </div>
                     </div>
                 </div>
                 
-                <button class="btn btn-primary" id="validateBtn" disabled>
-                    Valider ma session
-                </button>
-            </div>
-            
-            <div class="nav">
-                <button class="nav-btn" id="historyBtn">📊 Historique</button>
-                <button class="nav-btn" id="settingsBtn">⚙️ Paramètres</button>
-            </div>
-        </div>
+                <div class="planning-container">
+                    <!-- Planning généré dynamiquement -->
+                </div>
+                
+                <div class="stats-container">
+                    <h3><i class="fas fa-chart-bar"></i> Statistiques de la semaine</h3>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-value" id="total-hours">18h</div>
+                            <div class="stat-label">Total révision</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="priority-matiere">Algèbre</div>
+                            <div class="stat-label">Matière prioritaire</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="critical-days">Jeudi</div>
+                            <div class="stat-label">Jours critiques</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="risk-level">MODÉRÉ</div>
+                            <div class="stat-label">Risque burn-out</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="export-options">
+                    <h3><i class="fas fa-download"></i> Exporter</h3>
+                    <div class="export-buttons">
+                        <button class="btn btn-export" onclick="exportToCalendar()">
+                            <i class="fas fa-calendar-plus"></i> Google Calendar
+                        </button>
+                        <button class="btn btn-export" onclick="exportToPDF()">
+                            <i class="fas fa-file-pdf"></i> PDF
+                        </button>
+                        <button class="btn btn-secondary" onclick="regeneratePlanning()">
+                            <i class="fas fa-redo"></i> Régénérer
+                        </button>
+                        <button class="btn btn-primary" onclick="startOver()">
+                            <i class="fas fa-home"></i> Nouveau planning
+                        </button>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer>
+            <p>ISE Mentor - Assistant de révision intelligent pour Ingénieur Statisticien Économiste</p>
+            <p class="footer-note">Cet outil tient compte de tes cours, repos, examens, difficultés et priorités personnelles.</p>
+        </footer>
     </div>
-    
-    <!-- NOTE SCREEN -->
-    <div id="noteScreen" class="screen">
-        <div class="container">
-            <button class="back-btn" id="backFromNote">
-                ← Retour
-            </button>
-            
-            <div class="card">
-                <div style="text-align: center; margin-bottom: 24px;">
-                    <div style="font-size: 48px; color: var(--success);">🎉</div>
-                    <h2 style="margin: 12px 0 8px 0;">Session validée !</h2>
-                    <div style="color: var(--text-light);" id="sessionSummary">
-                        +20 min · Jour 1
-                    </div>
-                </div>
+
+    <!-- Modal pour ajouter un créneau libre -->
+    <div id="freeSlotModal" class="modal">
+        <div class="modal-content">
+            <h3><i class="fas fa-clock"></i> Ajouter un créneau libre</h3>
+            <div class="modal-form">
+                <label>Jour :</label>
+                <select id="modal-day">
+                    <option value="lundi">Lundi</option>
+                    <option value="mardi">Mardi</option>
+                    <option value="mercredi">Mercredi</option>
+                    <option value="jeudi">Jeudi</option>
+                    <option value="vendredi">Vendredi</option>
+                    <option value="samedi">Samedi</option>
+                    <option value="dimanche">Dimanche</option>
+                </select>
                 
-                <div>
-                    <label style="display: block; font-weight: 600; margin-bottom: 12px;">
-                        ✍️ Aujourd'hui, j'ai appris...
-                    </label>
-                    <textarea 
-                        class="note-area" 
-                        id="noteInput" 
-                        placeholder="(Optionnel) Notez ce que vous avez appris ou compris aujourd'hui..."
-                        maxlength="200"
-                    ></textarea>
-                    <div style="text-align: right; font-size: 12px; color: var(--text-light);">
-                        <span id="charCount">0</span>/200 caractères
-                    </div>
-                </div>
+                <label>Heure de début :</label>
+                <input type="time" id="modal-start" value="18:00">
                 
-                <div style="display: flex; gap: 12px; margin-top: 24px;">
-                    <button class="btn btn-secondary" id="skipNoteBtn">
-                        Passer
-                    </button>
-                    <button class="btn btn-success" id="saveNoteBtn">
-                        Enregistrer
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- HISTORY SCREEN -->
-    <div id="historyScreen" class="screen">
-        <div class="container">
-            <button class="back-btn" id="backFromHistory">
-                ← Retour
-            </button>
-            
-            <div class="card">
-                <h2 style="margin-bottom: 20px;">📅 Calendrier</h2>
+                <label>Heure de fin :</label>
+                <input type="time" id="modal-end" value="20:00">
                 
-                <div style="text-align: center; margin-bottom: 16px; font-weight: 600; font-size: 18px;" id="currentMonth">
-                    Février 2026
-                </div>
-                
-                <div class="calendar" id="calendar">
-                    <!-- Dynamically filled -->
-                </div>
-                
-                <div style="display: flex; justify-content: center; gap: 24px; margin: 24px 0; font-size: 12px; color: var(--text-light);">
-                    <div style="display: flex; align-items: center; gap: 6px;">
-                        <div style="width: 12px; height: 12px; background: var(--primary); border-radius: 3px;"></div>
-                        <span>Validé</span>
-                    </div>
-                    <div style="display: flex; align-items: center; gap: 6px;">
-                        <div style="width: 12px; height: 12px; background: var(--success); border-radius: 50%;"></div>
-                        <span>Aujourd'hui</span>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="card">
-                <h2 style="margin-bottom: 20px;">📈 Statistiques</h2>
-                
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-value" id="weekDays">0</div>
-                        <div class="stat-label">Jours cette semaine</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value" id="totalMinutes">0</div>
-                        <div class="stat-label">Minutes totales</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value" id="successRate">0%</div>
-                        <div class="stat-label">Taux de réussite</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value" id="currentStreak">0</div>
-                        <div class="stat-label">Streak actuel</div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="card">
-                <h2 style="margin-bottom: 16px;">📝 Dernières notes</h2>
-                <div id="recentNotes">
-                    <p style="color: var(--text-light); text-align: center; padding: 20px;">
-                        Aucune note pour le moment
-                    </p>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- SETTINGS SCREEN -->
-    <div id="settingsScreen" class="screen">
-        <div class="container">
-            <button class="back-btn" id="backFromSettings">
-                ← Retour
-            </button>
-            
-            <div class="card">
-                <h2 style="margin-bottom: 24px;">⚙️ Paramètres</h2>
-                
-                <div class="setting">
-                    <label>Domaine d'apprentissage</label>
-                    <select id="domainSelect">
-                        <option>Mon apprentissage</option>
-                        <option>Programmation</option>
-                        <option>Langues</option>
-                        <option>Design</option>
-                        <option>Musique</option>
-                        <option>Sport</option>
-                        <option>Autre</option>
-                    </select>
-                </div>
-                
-                <div class="setting">
-                    <label>Objectif quotidien (minutes)</label>
-                    <select id="goalSelect">
-                        <option value="15">15 minutes</option>
-                        <option value="20" selected>20 minutes</option>
-                        <option value="30">30 minutes</option>
-                        <option value="45">45 minutes</option>
-                        <option value="60">60 minutes</option>
-                    </select>
-                </div>
-                
-                <div style="margin-top: 40px; padding-top: 24px; border-top: 1px solid var(--border);">
-                    <button class="btn btn-secondary" id="exportBtn">
-                        📤 Exporter mes données
-                    </button>
-                    
-                    <button class="btn" style="background: var(--danger); color: white; margin-top: 12px;" id="resetBtn">
-                        🗑️ Tout réinitialiser
-                    </button>
-                    
-                    <div style="font-size: 11px; color: var(--text-light); text-align: center; margin-top: 16px;">
-                        Les données sont stockées localement dans votre navigateur
-                    </div>
+                <div class="modal-buttons">
+                    <button class="btn btn-secondary" onclick="closeModal()">Annuler</button>
+                    <button class="btn btn-primary" onclick="saveFreeSlot()">Ajouter</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <script>
-        // ======================
-        // APPLICATION STATE
-        // ======================
-        let appState = {
-            streak: 0,
-            goal: 20,
-            domain: "Mon apprentissage",
-            sessions: [],
-            selectedMinutes: null
-        };
-        
-        // ======================
-        // DOM ELEMENTS
-        // ======================
-        const elements = {
-            // Screens
-            mainScreen: document.getElementById('mainScreen'),
-            noteScreen: document.getElementById('noteScreen'),
-            historyScreen: document.getElementById('historyScreen'),
-            settingsScreen: document.getElementById('settingsScreen'),
-            
-            // Main screen
-            streakBadge: document.getElementById('streakBadge'),
-            streakCount: document.getElementById('streakCount'),
-            domainDisplay: document.getElementById('domainDisplay'),
-            goalDisplay: document.getElementById('goalDisplay'),
-            progressFill: document.getElementById('progressFill'),
-            progressPercent: document.getElementById('progressPercent'),
-            goalText: document.getElementById('goalText'),
-            validateBtn: document.getElementById('validateBtn'),
-            
-            // Navigation
-            historyBtn: document.getElementById('historyBtn'),
-            settingsBtn: document.getElementById('settingsBtn'),
-            backFromNote: document.getElementById('backFromNote'),
-            backFromHistory: document.getElementById('backFromHistory'),
-            backFromSettings: document.getElementById('backFromSettings'),
-            
-            // Note screen
-            noteInput: document.getElementById('noteInput'),
-            charCount: document.getElementById('charCount'),
-            skipNoteBtn: document.getElementById('skipNoteBtn'),
-            saveNoteBtn: document.getElementById('saveNoteBtn'),
-            sessionSummary: document.getElementById('sessionSummary'),
-            
-            // History screen
-            calendar: document.getElementById('calendar'),
-            currentMonth: document.getElementById('currentMonth'),
-            weekDays: document.getElementById('weekDays'),
-            totalMinutes: document.getElementById('totalMinutes'),
-            successRate: document.getElementById('successRate'),
-            currentStreak: document.getElementById('currentStreak'),
-            recentNotes: document.getElementById('recentNotes'),
-            
-            // Settings screen
-            domainSelect: document.getElementById('domainSelect'),
-            goalSelect: document.getElementById('goalSelect'),
-            exportBtn: document.getElementById('exportBtn'),
-            resetBtn: document.getElementById('resetBtn')
-        };
-        
-        // ======================
-        // UTILITY FUNCTIONS
-        // ======================
-        function getToday() {
-            return new Date().toISOString().split('T')[0];
-        }
-        
-        function formatDate(dateStr) {
-            const date = new Date(dateStr);
-            return date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
-        }
-        
-        function showToast(message) {
-            const toast = document.createElement('div');
-            toast.className = 'toast';
-            toast.textContent = message;
-            document.body.appendChild(toast);
-            
-            setTimeout(() => {
-                toast.style.opacity = '0';
-                setTimeout(() => toast.remove(), 300);
-            }, 2000);
-        }
-        
-        function animateElement(element, animation) {
-            element.classList.add(animation);
-            setTimeout(() => element.classList.remove(animation), 600);
-        }
-        
-        // ======================
-        // STORAGE
-        // ======================
-        function saveToStorage() {
-            localStorage.setItem('constanceApp', JSON.stringify(appState));
-        }
-        
-        function loadFromStorage() {
-            const saved = localStorage.getItem('constanceApp');
-            if (saved) {
-                appState = JSON.parse(saved);
-            }
-        }
-        
-        function resetStorage() {
-            if (confirm('Êtes-vous sûr de vouloir réinitialiser toutes vos données ?')) {
-                localStorage.removeItem('constanceApp');
-                appState = {
-                    streak: 0,
-                    goal: 20,
-                    domain: "Mon apprentissage",
-                    sessions: [],
-                    selectedMinutes: null
-                };
-                initApp();
-                showToast('Données réinitialisées');
-            }
-        }
-        
-        // ======================
-        // SESSION MANAGEMENT
-        // ======================
-        function hasSessionToday() {
-            return appState.sessions.some(s => s.date === getToday());
-        }
-        
-        function getTodaySession() {
-            return appState.sessions.find(s => s.date === getToday());
-        }
-        
-        function calculateStreak() {
-            const today = getToday();
-            const sortedSessions = [...appState.sessions].sort((a, b) => b.date.localeCompare(a.date));
-            
-            if (sortedSessions.length === 0) {
-                appState.streak = 0;
-                return;
-            }
-            
-            let streak = 0;
-            let currentDate = new Date(today);
-            
-            for (let session of sortedSessions) {
-                const sessionDate = new Date(session.date);
-                const diffDays = Math.floor((currentDate - sessionDate) / (1000 * 60 * 60 * 24));
-                
-                if (diffDays === 0) {
-                    // Same day, continue
-                } else if (diffDays === 1) {
-                    // Consecutive day
-                    streak++;
-                    currentDate = sessionDate;
-                } else {
-                    // Streak broken
-                    break;
-                }
-            }
-            
-            appState.streak = hasSessionToday() ? streak + 1 : 0;
-        }
-        
-        // ======================
-        // UI UPDATES
-        // ======================
-        function updateMainScreen() {
-            // Update streak
-            elements.streakCount.textContent = `Jour ${appState.streak}`;
-            
-            // Update domain and goal
-            elements.domainDisplay.textContent = appState.domain;
-            elements.goalDisplay.textContent = `Objectif : ${appState.goal} min/jour`;
-            elements.goalText.textContent = `${appState.goal} min`;
-            
-            // Update progress
-            const session = getTodaySession();
-            if (session) {
-                const progress = Math.min((session.minutes / appState.goal) * 100, 100);
-                elements.progressFill.style.width = `${progress}%`;
-                elements.progressPercent.textContent = `${Math.round(progress)}%`;
-                elements.validateBtn.textContent = '✓ Session validée';
-                elements.validateBtn.classList.add('btn-success');
-                elements.validateBtn.disabled = true;
-                appState.selectedMinutes = null;
-            } else if (appState.selectedMinutes) {
-                const progress = Math.min((appState.selectedMinutes / appState.goal) * 100, 100);
-                elements.progressFill.style.width = `${progress}%`;
-                elements.progressPercent.textContent = `${Math.round(progress)}%`;
-                elements.validateBtn.textContent = `Valider ${appState.selectedMinutes} min`;
-                elements.validateBtn.classList.remove('btn-success');
-                elements.validateBtn.disabled = false;
-            } else {
-                elements.progressFill.style.width = '0%';
-                elements.progressPercent.textContent = '0%';
-                elements.validateBtn.textContent = 'Valider ma session';
-                elements.validateBtn.classList.remove('btn-success');
-                elements.validateBtn.disabled = true;
-            }
-            
-            // Update duration buttons
-            document.querySelectorAll('.duration-option').forEach(btn => {
-                const minutes = parseInt(btn.dataset.minutes);
-                btn.classList.toggle('active', minutes === appState.selectedMinutes);
-            });
-        }
-        
-        function updateHistoryScreen() {
-            // Update month
-            const now = new Date();
-            const monthNames = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 
-                               'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
-            elements.currentMonth.textContent = `${monthNames[now.getMonth()]} ${now.getFullYear()}`;
-            
-            // Generate calendar
-            const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
-            const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
-            const firstWeekday = (firstDay.getDay() + 6) % 7; // Monday = 0
-            
-            let calendarHTML = '';
-            
-            // Empty days
-            for (let i = 0; i < firstWeekday; i++) {
-                calendarHTML += '<div class="calendar-day empty"></div>';
-            }
-            
-            // Days of month
-            const today = getToday();
-            for (let day = 1; day <= lastDay.getDate(); day++) {
-                const dateStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-                const hasSession = appState.sessions.some(s => s.date === dateStr);
-                const isToday = dateStr === today;
-                
-                let className = 'calendar-day';
-                if (isToday) className += ' today';
-                else if (hasSession) className += ' valid';
-                
-                calendarHTML += `<div class="${className}">${day}</div>`;
-            }
-            
-            elements.calendar.innerHTML = calendarHTML;
-            
-            // Update stats
-            const oneWeekAgo = new Date(now);
-            oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
-            
-            const weekSessions = appState.sessions.filter(s => 
-                new Date(s.date) >= oneWeekAgo
-            );
-            
-            elements.weekDays.textContent = weekSessions.length;
-            elements.totalMinutes.textContent = appState.sessions.reduce((sum, s) => sum + s.minutes, 0);
-            
-            // Success rate (last 30 days)
-            const thirtyDaysAgo = new Date(now);
-            thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-            const recentSessions = appState.sessions.filter(s => 
-                new Date(s.date) >= thirtyDaysAgo
-            );
-            const successRate = recentSessions.length > 0 ? 
-                Math.round((recentSessions.length / 30) * 100) : 0;
-            elements.successRate.textContent = `${successRate}%`;
-            
-            elements.currentStreak.textContent = appState.streak;
-            
-            // Update recent notes
-            const notes = appState.sessions
-                .filter(s => s.note)
-                .sort((a, b) => b.date.localeCompare(a.date))
-                .slice(0, 3);
-            
-            if (notes.length > 0) {
-                elements.recentNotes.innerHTML = notes.map(session => `
-                    <div style="background: var(--bg-main); padding: 16px; border-radius: 8px; margin-bottom: 12px;">
-                        <div style="font-size: 12px; color: var(--text-light); margin-bottom: 8px;">
-                            ${formatDate(session.date)} · ${session.minutes} min
-                        </div>
-                        <div style="font-size: 14px;">"${session.note}"</div>
-                    </div>
-                `).join('');
-            }
-        }
-        
-        // ======================
-        // EVENT HANDLERS
-        // ======================
-        function setupEventListeners() {
-            // Duration selection
-            document.querySelectorAll('.duration-option').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    if (hasSessionToday()) return;
-                    
-                    appState.selectedMinutes = parseInt(btn.dataset.minutes);
-                    updateMainScreen();
-                    animateElement(btn, 'pulse');
-                });
-            });
-            
-            // Validate session
-            elements.validateBtn.addEventListener('click', () => {
-                if (!appState.selectedMinutes || hasSessionToday()) return;
-                
-                // Create session
-                const session = {
-                    date: getToday(),
-                    minutes: appState.selectedMinutes,
-                    note: ''
-                };
-                
-                appState.sessions.push(session);
-                calculateStreak();
-                saveToStorage();
-                
-                // Update summary
-                elements.sessionSummary.textContent = `+${appState.selectedMinutes} min · Jour ${appState.streak}`;
-                
-                // Switch to note screen
-                switchScreen('noteScreen');
-                elements.noteInput.focus();
-            });
-            
-            // Note screen
-            elements.noteInput.addEventListener('input', () => {
-                elements.charCount.textContent = elements.noteInput.value.length;
-            });
-            
-            elements.skipNoteBtn.addEventListener('click', () => {
-                switchScreen('mainScreen');
-                updateMainScreen();
-                showToast('Session enregistrée !');
-            });
-            
-            elements.saveNoteBtn.addEventListener('click', () => {
-                const note = elements.noteInput.value.trim();
-                if (note) {
-                    const todaySession = getTodaySession();
-                    if (todaySession) {
-                        todaySession.note = note;
-                        saveToStorage();
-                    }
-                    showToast('Session et note enregistrées !');
-                } else {
-                    showToast('Session enregistrée !');
-                }
-                switchScreen('mainScreen');
-                updateMainScreen();
-            });
-            
-            // Navigation
-            elements.historyBtn.addEventListener('click', () => {
-                updateHistoryScreen();
-                switchScreen('historyScreen');
-            });
-            
-            elements.settingsBtn.addEventListener('click', () => {
-                // Load current settings
-                elements.domainSelect.value = appState.domain;
-                elements.goalSelect.value = appState.goal.toString();
-                switchScreen('settingsScreen');
-            });
-            
-            // Back buttons
-            elements.backFromNote.addEventListener('click', () => switchScreen('mainScreen'));
-            elements.backFromHistory.addEventListener('click', () => switchScreen('mainScreen'));
-            elements.backFromSettings.addEventListener('click', () => {
-                // Save settings
-                appState.domain = elements.domainSelect.value;
-                appState.goal = parseInt(elements.goalSelect.value);
-                saveToStorage();
-                updateMainScreen();
-                switchScreen('mainScreen');
-                showToast('Paramètres enregistrés');
-            });
-            
-            // Settings
-            elements.exportBtn.addEventListener('click', () => {
-                const dataStr = JSON.stringify(appState, null, 2);
-                const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
-                const exportFileDefaultName = `constance-data-${getToday()}.json`;
-                
-                const linkElement = document.createElement('a');
-                linkElement.setAttribute('href', dataUri);
-                linkElement.setAttribute('download', exportFileDefaultName);
-                linkElement.click();
-                
-                showToast('Données exportées');
-            });
-            
-            elements.resetBtn.addEventListener('click', resetStorage);
-        }
-        
-        function switchScreen(screenName) {
-            // Hide all screens
-            Object.values(elements).forEach(el => {
-                if (el && el.classList && el.classList.contains('screen')) {
-                    el.classList.remove('active');
-                }
-            });
-            
-            // Show target screen
-            elements[screenName].classList.add('active');
-        }
-        
-        // ======================
-        // INITIALIZATION
-        // ======================
-        function initApp() {
-            loadFromStorage();
-            calculateStreak();
-            setupEventListeners();
-            updateMainScreen();
-            
-            // Show welcome message on first visit
-            if (appState.sessions.length === 0) {
-                setTimeout(() => {
-                    showToast('Bienvenue sur Constance ! 👋');
-                }, 500);
-            }
-        }
-        
-        // ======================
-        // START THE APP
-        // ======================
-        document.addEventListener('DOMContentLoaded', initApp);
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
